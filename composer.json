@@ -1,0 +1,20 @@
+{
+    "name": "fyibmsd/pcache",
+    "description": "A flexible and High-preformance Cache Libaray of PHP",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "fyibmsd",
+            "email": "fyibmsd@gmail.com"
+        }
+    ],
+    "require": {
+        "phpunit/phpunit": "4.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pcache\\": "pcache",
+            "Tests\\": "tests"
+        }
+    }
+}
