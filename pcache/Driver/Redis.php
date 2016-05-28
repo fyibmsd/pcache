@@ -6,7 +6,15 @@ use Pcache\Handler\MissingExtensionException;
 
 class Redis extends CacheDriver
 {
-    protected $connected = false;
+    /**
+     * @var bool Server Connection Status
+     */
+    protected $connected = null;
+
+    /**
+     * @var Redis 单例
+    */
+    protected static $uniqueInstance;
 
     /**
      * Redis constructor.

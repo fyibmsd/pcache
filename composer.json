@@ -9,7 +9,8 @@
         }
     ],
     "require": {
-        "phpunit/phpunit": "4.8"
+        "phpunit/phpunit": "4.8",
+        "ssdb/phpssdb": "dev-master"
     },
     "autoload": {
         "psr-4": {
