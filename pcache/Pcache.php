@@ -11,6 +11,10 @@ class Pcache
      */
     public static function create($driver, array $config)
     {
+        if (!class_exists($driver)) {
+            throw new \RuntimeException("Driver $driver not exists!");
+        }
+
         return $driver::getInstance($config);
     }
 }

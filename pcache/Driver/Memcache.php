@@ -4,17 +4,29 @@ namespace Pcache\Driver;
 
 use Pcache\Handler\MissingExtensionException;
 
-class Yac extends CacheDriver
+class Memcache extends CacheDriver
 {
     /**
-     * @var \Yac
+     * @var bool Server Connection Status
      */
-    protected $handler;
+    protected $connected = false;
 
     /**
-     * @var Yac 单例
+     * @var Memcache 单例
      */
     protected static $uniqueInstance;
+
+    /**
+     * @var \Memcache
+     */
+    protected $handler = null;
+
+    protected function __construct()
+    {
+        $this->checkAvailable();
+
+        $this->handler = new \Memcache();
+    }
 
     /**
      * 检验驱动是否可用
@@ -23,12 +35,8 @@ class Yac extends CacheDriver
      */
     public function checkAvailable()
     {
-        if (!extension_loaded('yac')) {
-            throw new MissingExtensionException('The Yac PHP extension is required');
-        }
-
-        if (!ini_get('yac.enable')) {
-            throw new MissingExtensionException('The Yac Cache is not available!');
+        if (!extension_loaded('memcache')) {
+            throw new MissingExtensionException('The Memcache PHP extension is required');
         }
 
         return true;
@@ -37,12 +45,18 @@ class Yac extends CacheDriver
     public function setConfig(array $config)
     {
         $default = [
-            'prefix' => ''
+            'host'       => '127.0.0.1',
+            'port'       => 11211,
+            'persistent' => true
         ];
 
         $config = array_merge($default, $config);
 
-        $this->handler = new \Yac($config['prefix']);
+        $this->connected = $this->handler->addserver($config['host'], $config['port'], $config['persistent']);
+
+        if (!$this->connected) {
+            throw new \RuntimeException('Connect Memcache Server Failed!');
+        }
     }
 
     /**
@@ -53,7 +67,7 @@ class Yac extends CacheDriver
      */
     public function set($key, $value)
     {
-        return $this->handler->set($key, $value);
+        return $this->handler->add($key, $value);
     }
 
     /**
@@ -72,7 +86,11 @@ class Yac extends CacheDriver
      */
     public function exists($key)
     {
-        return $this->get($key) ? true : false;
+        if ($this->get($key)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

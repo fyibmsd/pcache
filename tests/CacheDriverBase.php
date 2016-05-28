@@ -65,8 +65,6 @@ class CacheDriverBase extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->handler->delete($key));
 
-        $this->assertFalse($this->handler->delete('NotExistKey'));
-
         $this->assertFalse($this->handler->exists($key));
     }
 }
